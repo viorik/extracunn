@@ -1,0 +1,42 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8 FATAL_ERROR)
+CMAKE_POLICY(VERSION 2.8)
+
+IF(LUAROCKS_PREFIX)
+  MESSAGE(STATUS "Installing extracunn through Luarocks")
+  STRING(REGEX REPLACE "(.*)lib/luarocks/rocks.*" "\\1" CMAKE_INSTALL_PREFIX  "${LUAROCKS_PREFIX}")
+  MESSAGE(STATUS "Prefix inferred from Luarocks: ${CMAKE_INSTALL_PREFIX}")
+ENDIF()
+
+FIND_PACKAGE(CUDA REQUIRED)
+LIST(APPEND CUDA_NVCC_FLAGS "-arch=sm_30")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-export-dynamic")
+
+FIND_PACKAGE(Torch REQUIRED)
+INCLUDE_DIRECTORIES("${Torch_INSTALL_INCLUDE}/THC")
+LINK_DIRECTORIES("${Torch_INSTALL_LIB}")
+
+FILE(GLOB luasrc *.lua)
+FILE(GLOB src-cuda *.cu)
+CUDA_ADD_LIBRARY(extracunn MODULE ${src-cuda})
+ADD_TORCH_PACKAGE(extracunn "${src-cuda}" "${luasrc}" "extra layers in cunn")
+TARGET_LINK_LIBRARIES(extracunn luaT THC TH)
+
+IF(LUALIB)
+  TARGET_LINK_LIBRARIES(extracunn ${LUALIB})
+ENDIF()
+
+### Torch packages supposes libraries prefix is "lib"
+SET_TARGET_PROPERTIES(extracunn PROPERTIES
+  PREFIX "lib"
+  IMPORT_PREFIX "lib")
+
+INSTALL(TARGETS extracunn
+  RUNTIME DESTINATION "${Torch_INSTALL_LUA_CPATH_SUBDIR}"
+  LIBRARY DESTINATION "${Torch_INSTALL_LUA_CPATH_SUBDIR}")
+
+INSTALL(
+  FILES
+  ${luasrc}
+  DESTINATION "${Torch_INSTALL_LUA_PATH_SUBDIR}/extracunn")
+
