@@ -11,5 +11,6 @@ extern "C"
 THCState* getCutorchState(lua_State* L);
 void extracunn_SpatialConvolutionMMNoBias_init(lua_State *L);
 void extracunn_Huber_init(lua_State *L);
+void extracunn_MSSECriterion_init(lua_State *L);
 
 #endif

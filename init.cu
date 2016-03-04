@@ -18,6 +18,6 @@ int luaopen_libextracunn(lua_State *L)
   lua_newtable(L);
   extracunn_SpatialConvolutionMMNoBias_init(L);
   extracunn_Huber_init(L);
-
+  extracunn_MSSECriterion_init(L);
   return 1;
 }
