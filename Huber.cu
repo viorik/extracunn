@@ -19,7 +19,7 @@ static int extracunn_Huber(lua_State *L)
   double threshold = luaL_checknumber(L,2);
   THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 
-  THCudaTensor_pointwiseApply1(state, input,
+  THC_pointwiseApply1(state, input,
                                Huber(threshold));
   
   THCudaCheck(cudaGetLastError());

@@ -18,25 +18,43 @@ LINK_DIRECTORIES("${Torch_INSTALL_LIB}")
 
 FILE(GLOB luasrc *.lua)
 FILE(GLOB src-cuda *.cu)
-CUDA_ADD_LIBRARY(extracunn MODULE ${src-cuda})
-ADD_TORCH_PACKAGE(extracunn "${src-cuda}" "${luasrc}" "extra layers in cunn")
-TARGET_LINK_LIBRARIES(extracunn luaT THC TH)
+set(package extracunn)
+
+#CUDA_ADD_LIBRARY(extracunn MODULE ${src-cuda})
+ADD_TORCH_PACKAGE(${package} "${src-cuda}" "${luasrc}" "extra layers in cunn")
+TARGET_LINK_LIBRARIES(${package} luaT THC TH)
 
 IF(LUALIB)
-  TARGET_LINK_LIBRARIES(extracunn ${LUALIB})
+  TARGET_LINK_LIBRARIES(${package} ${LUALIB})
 ENDIF()
 
 ### Torch packages supposes libraries prefix is "lib"
-SET_TARGET_PROPERTIES(extracunn PROPERTIES
-  PREFIX "lib"
-  IMPORT_PREFIX "lib")
+#SET_TARGET_PROPERTIES(extracunn PROPERTIES
+#  PREFIX "lib"
+#  IMPORT_PREFIX "lib")
 
-INSTALL(TARGETS extracunn
-  RUNTIME DESTINATION "${Torch_INSTALL_LUA_CPATH_SUBDIR}"
-  LIBRARY DESTINATION "${Torch_INSTALL_LUA_CPATH_SUBDIR}")
+#INSTALL(TARGETS extracunn
+#  RUNTIME DESTINATION "${Torch_INSTALL_LUA_CPATH_SUBDIR}"
+#  LIBRARY DESTINATION "${Torch_INSTALL_LUA_CPATH_SUBDIR}")
 
-INSTALL(
-  FILES
-  ${luasrc}
-  DESTINATION "${Torch_INSTALL_LUA_PATH_SUBDIR}/extracunn")
+#INSTALL(
+#  FILES
+#  ${luasrc}
+#  DESTINATION "${Torch_INSTALL_LUA_PATH_SUBDIR}/extracunn")
+
+if(src-cuda)
+  SET_TARGET_PROPERTIES(${package} PROPERTIES
+     PREFIX "lib"
+     IMPORT_PREFIX "lib"
+     INSTALL_NAME_DIR "@executable_path/${Torch_INSTALL_BIN2CPATH}")
+
+  INSTALL(TARGETS ${package} 
+     RUNTIME DESTINATION ${Torch_INSTALL_LUA_CPATH_SUBDIR}
+     LIBRARY DESTINATION ${Torch_INSTALL_LUA_CPATH_SUBDIR})
+ENDIF(src-cuda)
+
+IF(luasrc)
+    INSTALL(FILES ${luasrc} 
+    DESTINATION ${Torch_INSTALL_LUA_PATH_SUBDIR}/${package})
+ENDIF(luasrc)
 
