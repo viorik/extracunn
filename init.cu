@@ -19,5 +19,10 @@ int luaopen_libextracunn(lua_State *L)
   extracunn_SpatialConvolutionMMNoBias_init(L);
   extracunn_Huber_init(L);
   extracunn_MSSECriterion_init(L);
+  extracunn_SpatialSkew_init(L);
+  extracunn_SpatialUnskew_init(L);
+  extracunn_SpatialMirrorHorizontal_init(L);
+  extracunn_SpatialMirrorVertical_init(L);
+  extracunn_SpatialMirrorDiagonal_init(L);
   return 1;
 }
