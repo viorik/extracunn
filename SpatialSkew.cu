@@ -66,12 +66,12 @@ static int extracunn_SpatialSkew_updateOutput(lua_State *L)
 
   if (numInputDims == 3) {
     THCudaTensor_resize3d(state, output, numPlanes, outputH, outputW);
-
+    THCudaTensor_zero(state, output);
     devInput = toDeviceTensor<float, 3>(state, input).upcastOuter<4>();
     devOutput = toDeviceTensor<float, 3>(state, output).upcastOuter<4>();
   } else {
     THCudaTensor_resize4d(state, output, numBatch, numPlanes, outputH, outputW);
-
+    THCudaTensor_zero(state, output);
     devInput = toDeviceTensor<float, 4>(state, input);
     devOutput = toDeviceTensor<float, 4>(state, output);
   }
