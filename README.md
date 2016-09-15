@@ -1,7 +1,7 @@
 #extracunn
 
 This package contains cuda implementations for various layers:
-* SpatialConvolutionNoBias: convolutional layer without bias, useful for e.g. gating operations in spatial LSTM cells.
+* SpatialConvolutionNoBias: convolutional layer without bias, useful for e.g. gated operations in spatial LSTM cells. Note that currently the SpatialConvolution layer in torch has the option [noBias()](https://github.com/torch/nn/blob/master/SpatialConvolution.lua#L28), which can be used instead of this layer.
 * Huber penalty: penalise for non-smoothness.
 * MSSECriterion: scale-invariant loss layer, useful for e.g. depth estimation. Implementation from [Eigen's paper](http://arxiv.org/pdf/1411.4734v4.pdf). Note that the error is computed between log ground truth and log prediction.
 * InterleaveTable: interleave elements of `n` tables, each one containing `length` elements.
